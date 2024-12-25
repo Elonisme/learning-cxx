@@ -1,9 +1,8 @@
 ﻿#include "../exercise.h"
-#include <cstring>
 #include <memory>
 #include <string>
 #include <vector>
-
+#include <cstring>
 // READ: `std::unique_ptr` <https://zh.cppreference.com/w/cpp/memory/unique_ptr>
 
 std::vector<std::string> RECORDS;
@@ -23,15 +22,21 @@ public:
 
 using Unique = std::unique_ptr<Resource>;
 Unique reset(Unique ptr) {
-    if (ptr) ptr->record('r');
+    if (ptr) {
+        ptr->record('r');
+    }
     return std::make_unique<Resource>();
 }
 Unique drop(Unique ptr) {
-    if (ptr) ptr->record('d');
+    if (ptr) {
+        ptr->record('d');
+    }
     return nullptr;
 }
 Unique forward(Unique ptr) {
-    if (ptr) ptr->record('f');
+    if (ptr) {
+        ptr->record('f');
+    }
     return ptr;
 }
 
@@ -39,12 +44,12 @@ int main(int argc, char **argv) {
     std::vector<std::string> problems[3];
 
     drop(forward(reset(nullptr)));
-    problems[0] = std::move(RECORDS);
+    problems[0] = std::move(RECORDS); //f,d
 
-    forward(drop(reset(forward(forward(reset(nullptr))))));
+    forward(drop(reset(forward(forward(reset(nullptr)))))); //ffrd
     problems[1] = std::move(RECORDS);
 
-    drop(drop(reset(drop(reset(reset(nullptr))))));
+    drop(drop(reset(drop(reset(reset(nullptr)))))); // rdfdd
     problems[2] = std::move(RECORDS);
 
     // ---- 不要修改以上代码 ----
@@ -52,9 +57,8 @@ int main(int argc, char **argv) {
     std::vector<const char *> answers[]{
         {"fd"},
         // TODO: 分析 problems[1] 中资源的生命周期，将记录填入 `std::vector`
-        // NOTICE: 此题结果依赖对象析构逻辑，平台相关，提交时以 CI 实际运行平台为准
-        {"", "", "", "", "", "", "", ""},
-        {"", "", "", "", "", "", "", ""},
+        {"d", "ffr"},
+        {"d", "d", "r",},
     };
 
     // ---- 不要修改以下代码 ----
